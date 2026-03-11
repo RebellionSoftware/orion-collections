@@ -1,0 +1,281 @@
+{
+  "orion": "1.0",
+  "collection": {
+    "id": "col-sample-productivity",
+    "name": "Everyday Productivity",
+    "description": "Practical prompts for the things you do every day — emails, status updates, code reviews, meeting notes, and more. Copy, adapt, and make them your own.",
+    "promptOrder": [
+      "sample-prod-01",
+      "sample-prod-02",
+      "sample-prod-03",
+      "sample-prod-04",
+      "sample-prod-05",
+      "sample-prod-06",
+      "sample-prod-07"
+    ],
+    "createdAt": "2026-03-11T00:00:00.000Z"
+  },
+  "prompts": [
+    {
+      "id": "sample-prod-01",
+      "name": "Reply to This Email",
+      "collectionId": "col-sample-productivity",
+      "parentId": null,
+      "version": 1,
+      "provider": "openai",
+      "model": "gpt-4o",
+      "systemPrompt": "You are a professional writing assistant. You draft clear, concise, ready-to-send email replies. You never use filler phrases like 'I hope this email finds you well.' You never leave placeholder text like '[Your Name]' or '[Date]' — always write complete, sendable emails. If you don't know a specific detail (like the sender's name), omit it gracefully rather than inserting a placeholder.",
+      "userPrompt": "I received this email:\n\n{{received_email}}\n\nMy intent: {{your_intent}}\n\nDraft a reply that is {{tone}}. Keep it under 150 words. Write it ready-to-send — no placeholders, no instructions in brackets.",
+      "parameters": {
+        "temperature": 0.7,
+        "maxTokens": 512,
+        "topP": 1,
+        "stream": true
+      },
+      "attachments": [],
+      "assertions": [
+        {
+          "id": "a-prod-01-1",
+          "type": "not_contains",
+          "value": "[Your Name]",
+          "caseSensitive": false
+        },
+        {
+          "id": "a-prod-01-2",
+          "type": "not_contains",
+          "value": "[",
+          "caseSensitive": false
+        },
+        {
+          "id": "a-prod-01-3",
+          "type": "max_length",
+          "value": "900",
+          "caseSensitive": false
+        }
+      ],
+      "notes": "## Reply to This Email\n\nPaste in the email you received, describe what you want to say, and pick a tone. The model writes it — you review and send.\n\n**Example inputs:**\n\n| variable | example |\n|---|---|\n| received_email | `Hi, just following up on the proposal I sent last week. Any thoughts?` |\n| your_intent | `Apologize for the delay, let them know I'm reviewing it and will respond by Friday` |\n| tone | `warm and professional` |\n\n**Other tones to try:** `direct and brief`, `apologetic but confident`, `enthusiastic`, `firm but polite`\n\n**Assertions** catch placeholder leakage (`[Your Name]`, `[Date]`) and enforce the length limit — two of the most common ways AI email drafters fail.",
+      "createdAt": "2026-03-11T00:00:00.000Z",
+      "updatedAt": "2026-03-11T00:00:00.000Z"
+    },
+    {
+      "id": "sample-prod-02",
+      "name": "Summarize a Long Thread",
+      "collectionId": "col-sample-productivity",
+      "parentId": null,
+      "version": 1,
+      "provider": "openai",
+      "model": "gpt-4o",
+      "systemPrompt": "You are an expert at extracting signal from noise. You read long Slack threads, email chains, and discussion logs and pull out exactly what matters: decisions made, action items assigned, and questions still open. You are ruthlessly concise.",
+      "userPrompt": "Summarize this thread:\n\n{{thread}}\n\nReturn:\n\n**Decisions made** — what was agreed on (bullet points, or 'None' if none)\n\n**Action items** — who needs to do what, with any deadlines mentioned (bullet points, or 'None')\n\n**Open questions** — what's still unresolved (bullet points, or 'None')\n\n**TL;DR** — one sentence capturing the overall outcome",
+      "parameters": {
+        "temperature": 0.3,
+        "maxTokens": 1024,
+        "topP": 1,
+        "stream": true
+      },
+      "attachments": [],
+      "assertions": [
+        {
+          "id": "a-prod-02-1",
+          "type": "contains",
+          "value": "TL;DR",
+          "caseSensitive": true
+        },
+        {
+          "id": "a-prod-02-2",
+          "type": "contains",
+          "value": "Action items",
+          "caseSensitive": false
+        },
+        {
+          "id": "a-prod-02-3",
+          "type": "min_length",
+          "value": "100",
+          "caseSensitive": false
+        }
+      ],
+      "notes": "## Summarize a Long Thread\n\nWorks great for Slack threads, email chains, GitHub issue discussions, or any wall of text where you need the highlights fast.\n\n**How to use:** Paste the entire thread into the `{{thread}}` variable field — timestamps, usernames, and all. The model ignores the noise and pulls out what matters.\n\n**Tip:** Lower temperature (currently 0.3) keeps the summary factual and grounded in the actual content rather than inferring things that weren't said.\n\n**Works well for:**\n- Slack threads where a decision got buried in 40 messages\n- Email chains with multiple people replying-all\n- GitHub or Jira comment threads\n- Long meeting chat logs",
+      "createdAt": "2026-03-11T00:00:00.000Z",
+      "updatedAt": "2026-03-11T00:00:00.000Z"
+    },
+    {
+      "id": "sample-prod-03",
+      "name": "Explain This Code",
+      "collectionId": "col-sample-productivity",
+      "parentId": null,
+      "version": 1,
+      "provider": "openai",
+      "model": "gpt-4o",
+      "systemPrompt": "You are a patient and precise software engineer who is great at explaining code to different audiences. You adjust your language and depth based on who you're explaining to. You always cover: what the code does, how it works, and any important gotchas or edge cases worth knowing.",
+      "userPrompt": "Explain this {{language}} code to {{audience}}:\n\n```{{language}}\n{{code}}\n```\n\nCover:\n1. What it does (in plain terms)\n2. How it works step by step\n3. Any gotchas, edge cases, or things to watch out for",
+      "parameters": {
+        "temperature": 0.5,
+        "maxTokens": 1024,
+        "topP": 1,
+        "stream": true
+      },
+      "attachments": [],
+      "assertions": [
+        {
+          "id": "a-prod-03-1",
+          "type": "min_length",
+          "value": "200",
+          "caseSensitive": false
+        },
+        {
+          "id": "a-prod-03-2",
+          "type": "llm_rubric",
+          "value": "",
+          "caseSensitive": false,
+          "rubric": "The explanation is appropriate for the stated audience — not too technical for a non-developer, not dumbed down for an experienced engineer. It explains what the code does and mentions at least one gotcha or edge case.",
+          "threshold": 3
+        }
+      ],
+      "notes": "## Explain This Code\n\nPaste any code snippet, pick the language and who you're explaining it to, and get a clear walkthrough.\n\n**Audience examples:**\n- `a junior developer joining the team`\n- `a non-technical product manager`\n- `a senior engineer doing a code review`\n- `someone who knows Python but not JavaScript`\n- `me — I wrote this 6 months ago and forgot how it works`\n\n**Great for:**\n- Onboarding documentation\n- PR descriptions\n- Explaining a complex function in a code review\n- Understanding code you inherited\n\n**Tip:** The LLM rubric assertion checks that the explanation actually calibrates to the audience — useful if you're running this in batch mode across multiple snippets.",
+      "createdAt": "2026-03-11T00:00:00.000Z",
+      "updatedAt": "2026-03-11T00:00:00.000Z"
+    },
+    {
+      "id": "sample-prod-04",
+      "name": "Write My PR Description",
+      "collectionId": "col-sample-productivity",
+      "parentId": null,
+      "version": 1,
+      "provider": "openai",
+      "model": "gpt-4o",
+      "systemPrompt": "You are an experienced software engineer who writes clear, useful pull request descriptions. A good PR description helps reviewers understand the why, not just the what. You write in plain language, use markdown formatting, and always include a testing section so reviewers know how to verify the change.",
+      "userPrompt": "Write a pull request description for these changes:\n\n{{changes}}\n\nFormat it as:\n\n## What\nA brief description of what changed.\n\n## Why\nThe motivation — what problem does this solve or what value does it add?\n\n## How\nAny non-obvious implementation details reviewers should know.\n\n## Testing\nHow to verify this works. Include manual steps or mention automated test coverage.",
+      "parameters": {
+        "temperature": 0.5,
+        "maxTokens": 1024,
+        "topP": 1,
+        "stream": true
+      },
+      "attachments": [],
+      "assertions": [
+        {
+          "id": "a-prod-04-1",
+          "type": "contains",
+          "value": "## What",
+          "caseSensitive": true
+        },
+        {
+          "id": "a-prod-04-2",
+          "type": "contains",
+          "value": "## Testing",
+          "caseSensitive": true
+        },
+        {
+          "id": "a-prod-04-3",
+          "type": "min_length",
+          "value": "300",
+          "caseSensitive": false
+        }
+      ],
+      "notes": "## Write My PR Description\n\nDescribe your changes in rough notes and get a structured PR description back.\n\n**Example `{{changes}}` input:**\n```\n- Added rate limiting middleware to all API endpoints\n- Limit is 100 requests per minute per IP\n- Returns 429 with a Retry-After header when exceeded\n- Added Redis for tracking request counts\n- Unit tests for the middleware\n- Updated the API docs\n```\n\n**Tips:**\n- The rougher your input, the more useful this is — bullet points, git log output, or stream of consciousness all work\n- Paste your actual `git diff --stat` output for a quick first draft\n- The assertions verify the required sections are present so you don't accidentally get a free-form blob of text",
+      "createdAt": "2026-03-11T00:00:00.000Z",
+      "updatedAt": "2026-03-11T00:00:00.000Z"
+    },
+    {
+      "id": "sample-prod-05",
+      "name": "Weekly Status Update",
+      "collectionId": "col-sample-productivity",
+      "parentId": null,
+      "version": 1,
+      "provider": "openai",
+      "model": "gpt-4o",
+      "systemPrompt": "You are an executive communication assistant. You help individual contributors and team leads write weekly status updates that are clear, professional, and easy for a manager to scan in 30 seconds. You turn rough bullet points into polished prose. You surface blockers clearly without being alarmist. You are concise — no fluff, no filler.",
+      "userPrompt": "Write a weekly status update from these notes:\n\nWins this week:\n{{wins}}\n\nBlockers or risks:\n{{blockers}}\n\nPlan for next week:\n{{next_week}}\n\nFormat it as a short, scannable update. Use bold for section headers. Keep the whole thing under 200 words.",
+      "parameters": {
+        "temperature": 0.6,
+        "maxTokens": 512,
+        "topP": 1,
+        "stream": true
+      },
+      "attachments": [],
+      "assertions": [
+        {
+          "id": "a-prod-05-1",
+          "type": "max_length",
+          "value": "1200",
+          "caseSensitive": false
+        },
+        {
+          "id": "a-prod-05-2",
+          "type": "min_length",
+          "value": "100",
+          "caseSensitive": false
+        }
+      ],
+      "notes": "## Weekly Status Update\n\nDump your rough notes in and get a polished update ready to paste into Slack, email, or your team wiki.\n\n**Example inputs:**\n\n| variable | example |\n|---|---|\n| wins | `Shipped the auth refactor, fixed the flaky test in CI, reviewed 3 PRs` |\n| blockers | `Waiting on design sign-off for the new dashboard, infra ticket for staging env is stalled` |\n| next_week | `Start mobile nav work, finish documentation for the API changes, sync with Jordan on the Q2 roadmap` |\n\n**Tip:** This works best with honest, unpolished notes. The model does the polishing — you just need the raw material.\n\n**Variation:** Add `{{audience}}` as a variable and change the system prompt behavior based on whether you're writing for your direct manager, a skip-level, or a company-wide update.",
+      "createdAt": "2026-03-11T00:00:00.000Z",
+      "updatedAt": "2026-03-11T00:00:00.000Z"
+    },
+    {
+      "id": "sample-prod-06",
+      "name": "Tone Check & Rewrite",
+      "collectionId": "col-sample-productivity",
+      "parentId": null,
+      "version": 1,
+      "provider": "openai",
+      "model": "gpt-4o",
+      "systemPrompt": "You are a communication coach with deep experience in workplace dynamics. You read messages with fresh eyes and give honest, specific feedback on how they come across — not just how they're intended. You are direct but kind. You do not sugarcoat when a message might land badly.",
+      "userPrompt": "Review this message for tone:\n\n{{message}}\n\nIntended tone: {{intended_tone}}\n\nRespond with:\n1. **How it actually reads** — be specific about what words or phrases create that impression\n2. **Verdict** — does it hit the intended tone? (Yes / Mostly / No)\n3. **Rewrite** — if the verdict isn't 'Yes', provide a rewritten version that lands better",
+      "parameters": {
+        "temperature": 0.5,
+        "maxTokens": 1024,
+        "topP": 1,
+        "stream": true
+      },
+      "attachments": [],
+      "assertions": [
+        {
+          "id": "a-prod-06-1",
+          "type": "contains",
+          "value": "Verdict",
+          "caseSensitive": false
+        },
+        {
+          "id": "a-prod-06-2",
+          "type": "llm_rubric",
+          "value": "",
+          "caseSensitive": false,
+          "rubric": "The response gives specific, honest feedback about how the message reads — not just generic advice. The verdict (Yes/Mostly/No) is present and the rewrite (if provided) is meaningfully different from the original.",
+          "threshold": 3
+        }
+      ],
+      "notes": "## Tone Check & Rewrite\n\nFor those moments when you've written something and can't tell if it reads the way you meant it to.\n\n**Good for:**\n- Messages to a difficult stakeholder\n- Feedback you're giving to a direct report\n- Pushback on a decision that might come across as too aggressive\n- An apology that might sound defensive\n- Anything you've rewritten 4 times and still aren't sure about\n\n**Example:**\n\n| variable | example |\n|---|---|\n| message | `Per my last email, I already addressed this. Please re-read before escalating.` |\n| intended_tone | `professional and firm, not passive-aggressive` |\n\n**Tip:** The LLM rubric here checks that the feedback is specific and honest — this is a case where a generic 'sounds good!' would be actively unhelpful.",
+      "createdAt": "2026-03-11T00:00:00.000Z",
+      "updatedAt": "2026-03-11T00:00:00.000Z"
+    },
+    {
+      "id": "sample-prod-07",
+      "name": "Brainstorm Angles",
+      "collectionId": "col-sample-productivity",
+      "parentId": null,
+      "version": 1,
+      "provider": "openai",
+      "model": "gpt-4o",
+      "systemPrompt": "You are a lateral thinking partner. Your job is not to validate the user's existing thinking — it is to expand it. You look for angles they haven't considered, challenge assumptions that might be limiting them, and suggest approaches that are genuinely different from the obvious path. You are direct and specific. You do not pad your answers with encouragement.",
+      "userPrompt": "I'm working on: {{goal}}\n\nHere's my current thinking:\n{{current_thinking}}\n\nGive me 5 angles or approaches I probably haven't considered. For each one:\n- A short title\n- A 2–3 sentence explanation of the idea\n- Why it might be better or different from my current approach\n\nChallenge any assumptions you see in my thinking.",
+      "parameters": {
+        "temperature": 0.9,
+        "maxTokens": 1024,
+        "topP": 1,
+        "stream": true
+      },
+      "attachments": [],
+      "assertions": [
+        {
+          "id": "a-prod-07-1",
+          "type": "min_length",
+          "value": "400",
+          "caseSensitive": false
+        }
+      ],
+      "notes": "## Brainstorm Angles\n\nUse this when you're stuck on a problem and keep circling the same ideas. The high temperature (0.9) pushes the model toward less obvious suggestions.\n\n**Works for anything:**\n- Product decisions: `how to improve user retention`\n- Technical problems: `how to reduce our API latency`\n- Career questions: `how to get more visibility on my team`\n- Personal projects: `how to make my side project sustainable`\n- Content: `angles for a talk about prompt engineering`\n\n**Example inputs:**\n\n| variable | example |\n|---|---|\n| goal | `increase signups on our landing page` |\n| current_thinking | `We've been A/B testing headlines and button colors. We're considering adding social proof. Our conversion rate is 2.4% and we want to hit 4%.` |\n\n**Tip:** The more honestly you describe your current thinking (including what you've already tried), the more useful the pushback will be. Don't make your current approach sound better than it is.",
+      "createdAt": "2026-03-11T00:00:00.000Z",
+      "updatedAt": "2026-03-11T00:00:00.000Z"
+    }
+  ]
+}

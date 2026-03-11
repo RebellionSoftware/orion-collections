@@ -1,0 +1,135 @@
+{
+  "orion": "1.0",
+  "collection": {
+    "id": "col-sample-getting-started",
+    "name": "Getting Started",
+    "description": "A hands-on introduction to Orion's core features — send your first prompt, use template variables, attach a file, and enforce output rules with assertions.",
+    "promptOrder": [
+      "sample-gs-01",
+      "sample-gs-02",
+      "sample-gs-03",
+      "sample-gs-04"
+    ],
+    "createdAt": "2026-03-10T00:00:00.000Z"
+  },
+  "prompts": [
+    {
+      "id": "sample-gs-01",
+      "name": "01 — Hello, Orion",
+      "collectionId": "col-sample-getting-started",
+      "parentId": null,
+      "version": 1,
+      "provider": "openai",
+      "model": "gpt-4o",
+      "systemPrompt": "You are a friendly and knowledgeable assistant.",
+      "userPrompt": "What are three things that make Orion useful for someone who tests and iterates on LLM prompts? Give each point a short title and a two-sentence explanation.",
+      "parameters": {
+        "temperature": 0.7,
+        "maxTokens": 1024,
+        "topP": 1,
+        "stream": true
+      },
+      "attachments": [],
+      "assertions": [],
+      "notes": "## Welcome to Orion!\n\nThis is your first prompt. There's nothing special about it — just a system prompt, a user prompt, and a model.\n\n**Try these:**\n1. Press **Ctrl+Enter** (or Cmd+Enter on Mac) to send it\n2. Edit the user prompt and send again — notice how the response changes\n3. Click the parameters button (sliders icon) in the toolbar to adjust temperature or max tokens\n4. Check the **Raw** tab in the response panel to see the full JSON request and response\n\nOnce you're comfortable, move on to prompt **02** to learn about template variables.",
+      "createdAt": "2026-03-10T00:00:00.000Z",
+      "updatedAt": "2026-03-10T00:00:00.000Z"
+    },
+    {
+      "id": "sample-gs-02",
+      "name": "02 — Template Variables",
+      "collectionId": "col-sample-getting-started",
+      "parentId": null,
+      "version": 1,
+      "provider": "openai",
+      "model": "gpt-4o",
+      "systemPrompt": "You are a clear and engaging teacher who makes complex ideas accessible.",
+      "userPrompt": "Explain {{concept}} to a {{audience}} in 3–5 sentences. Use simple language and at least one concrete, relatable example.",
+      "parameters": {
+        "temperature": 0.7,
+        "maxTokens": 1024,
+        "topP": 1,
+        "stream": true
+      },
+      "attachments": [],
+      "assertions": [],
+      "notes": "## Template Variables\n\nNotice the `{{concept}}` and `{{audience}}` placeholders in the user prompt. Orion detects these automatically and shows a **Variable Test Panel** between the prompts and the send button.\n\n**Try these combinations:**\n\n| concept | audience |\n|---|---|\n| machine learning | a 10-year-old |\n| compound interest | a first-year college student |\n| quantum entanglement | a retired accountant |\n| the OSI model | a junior developer |\n\nVariables let you reuse the same prompt structure across many different inputs without duplicating prompts. In the next step, you'll see how to run this at scale with a CSV.",
+      "createdAt": "2026-03-10T00:00:00.000Z",
+      "updatedAt": "2026-03-10T00:00:00.000Z"
+    },
+    {
+      "id": "sample-gs-03",
+      "name": "03 — Summarize Meeting Notes",
+      "collectionId": "col-sample-getting-started",
+      "parentId": null,
+      "version": 1,
+      "provider": "openai",
+      "model": "gpt-4o",
+      "systemPrompt": "You are a productivity assistant. Your job is to read meeting notes and extract clear, structured summaries that busy people can act on immediately.",
+      "userPrompt": "Review the attached meeting notes and return:\n\n1. **Summary** — 2–3 sentences capturing the key decisions made\n2. **Action Items** — a list with owner name, task, and due date for each item\n3. **Open Questions** — anything left unresolved or flagged for follow-up",
+      "parameters": {
+        "temperature": 0.5,
+        "maxTokens": 1024,
+        "topP": 1,
+        "stream": true
+      },
+      "attachments": [
+        {
+          "name": "q1-product-review.txt",
+          "mimeType": "text/plain",
+          "data": "UVVBUlRFUkxZIFBST0RVQ1QgUkVWSUVXIOKAlCBRMSAyMDI2Cj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKRGF0ZTogTWFyY2ggNSwgMjAyNgpBdHRlbmRlZXM6IE1heWEgUGF0ZWwgKFBNKSwgUmF2aSBTaW5naCAoRW5naW5lZXJpbmcgTGVhZCksIExpbiBaaG91IChEZXNpZ24pLAogICAgICAgICAgIEFsZXggVG9ycmVzIChRQSksIEpvcmRhbiBLaW0gKEN1c3RvbWVyIFN1Y2Nlc3MpLCBTYW0gT2thZm9yIChBbmFseXRpY3MpCgotLS0KCkFHRU5EQQotLS0tLS0KMS4gUTEgbWV0cmljcyByZXZpZXcKMi4gRmVhdHVyZSB2ZWxvY2l0eSAmIHNsaXBwYWdlCjMuIEN1c3RvbWVyIGZlZWRiYWNrIHRoZW1lcwo0LiBRMiByb2FkbWFwIHByaW9yaXRpemF0aW9uCgotLS0KCkRJU0NVU1NJT04gTk9URVMKClExIE1ldHJpY3MgKFNhbSkKLSBNb250aGx5IGFjdGl2ZSB1c2VycyB1cCAyMyUgZnJvbSBRNAotIENodXJuIHJhdGUgaW1wcm92ZWQgZnJvbSA0LjIlIHRvIDMuMSUKLSBOUFMgc2NvcmU6IDY4ICh0YXJnZXQgd2FzIDY1KSDigJQgZXhjZWVkZWQKLSBTdXBwb3J0IHRpY2tldHMgZG93biAxOCUgYWZ0ZXIgb25ib2FyZGluZyByZWRlc2lnbgoKRmVhdHVyZSBWZWxvY2l0eSAoUmF2aSkKLSBTaGlwcGVkIDE0IG9mIDE3IHBsYW5uZWQgZmVhdHVyZXMKLSAzIGZlYXR1cmVzIHNsaXBwZWQgdG8gUTI6IFNTTywgYXVkaXQgbG9ncywgYnVsayBleHBvcnQKLSBUZWNoIGRlYnQgc3ByaW50IHBhaWQgZG93biB+NDAlIG9mIGJhY2tsb2cKLSBNb2JpbGUgYXBwOiBjdXJyZW50bHkgMyB3ZWVrcyBiZWhpbmQgc2NoZWR1bGUgZHVlIHRvIHBsYXRmb3JtIFNESyBpc3N1ZXMKCkN1c3RvbWVyIEZlZWRiYWNrIFRoZW1lcyAoSm9yZGFuKQotICMxOiBTbG93IGxvYWQgdGltZXMgb24gbGFyZ2UgZGF0YXNldHMg4oCUIHJlcG9ydGVkIGJ5IDM0IGVudGVycHJpc2UgYWNjb3VudHMKLSAjMjogTm8gYnVsayBlZGl0IGNhcGFiaWxpdHkg4oCUIGhpZ2ggZGVtYW5kIGZyb20gcG93ZXIgdXNlcnMKLSAjMzogU2xhY2sgaW50ZWdyYXRpb24gcmVxdWVzdGVkIGZyZXF1ZW50bHkgKG1lbnRpb25lZCBpbiA2MSBzdXBwb3J0IHRpY2tldHMpCi0gIzQ6IEV4cG9ydCBmb3JtYXRzIHRvbyBsaW1pdGVkICh1c2VycyBuZWVkIENTViwgRXhjZWwsIGFuZCBQREYgb3B0aW9ucykKClEyIFJvYWRtYXAgRGlzY3Vzc2lvbgotIFNTTyBpbnRlZ3JhdGlvbjogY2Fycnktb3ZlciBmcm9tIFExLCBub3cgaGlnaGVzdCBwcmlvcml0eQotIFBlcmZvcm1hbmNlIG9wdGltaXphdGlvbiBzcHJpbnQ6IGFwcHJvdmVkIGZvciBBcHJpbCwgUmF2aSB0byBzY29wZQotIEJ1bGsgZWRpdDogZGVzaWduIHVuZGVyd2F5IChMaW4pLCB0YXJnZXQgTWF5IHJlbGVhc2UKLSBTbGFjayBpbnRlZ3JhdGlvbjogbmVlZHMgc2NvcGluZyBzZXNzaW9uIGJlZm9yZSBjb21taXRtZW50CgotLS0KCkFDVElPTiBJVEVNUwoKT3duZXI6IE1heWEgUGF0ZWwKLSBbIF0gRmluYWxpemUgUTIgcm9hZG1hcCBkb2MgYW5kIHNoYXJlIHdpdGggYWxsIHN0YWtlaG9sZGVycwotIFsgXSBTY2hlZHVsZSBjdXN0b21lciBpbnRlcnZpZXdzIGZvciBsb2FkIHRpbWUgaXNzdWUgKHRhcmdldDogNSBlbnRlcnByaXNlIGFjY291bnRzKQotIFsgXSBDcmVhdGUgc2NvcGluZyBicmllZiBmb3IgU2xhY2sgaW50ZWdyYXRpb24KRHVlOiBNYXJjaCAxMgoKT3duZXI6IFJhdmkgU2luZ2gKLSBbIF0gUm9vdCBjYXVzZSBhbmFseXNpcyBvbiBsb2FkIHRpbWUgaXNzdWVzIOKAlCBwcmVzZW50IGZpbmRpbmdzIGF0IG5leHQgbWVldGluZwotIFsgXSBSZXZpc2VkIG1vYmlsZSBhcHAgdGltZWxpbmUgd2l0aCBjbGVhciBtaWxlc3RvbmVzCi0gWyBdIEtpY2sgb2ZmIFNTTyBpbXBsZW1lbnRhdGlvbiBwbGFubmluZyB3aXRoIGFyY2hpdGVjdHVyZSByZXZpZXcKRHVlOiBNYXJjaCAxMAoKT3duZXI6IExpbiBaaG91Ci0gWyBdIENvbXBsZXRlIGJ1bGsgZWRpdCBtb2NrdXBzIGZvciBzdGFrZWhvbGRlciByZXZpZXcKLSBbIF0gU2NoZWR1bGUgdXNlciB0ZXN0IHNlc3Npb24gZm9yIHJldmlzZWQgb25ib2FyZGluZyBmbG93CkR1ZTogTWFyY2ggMTUKCk93bmVyOiBBbGV4IFRvcnJlcwotIFsgXSBVcGRhdGUgcmVncmVzc2lvbiBzdWl0ZSB0byBjb3ZlciBRMSBzaGlwcGVkIGZlYXR1cmVzCi0gWyBdIERyYWZ0IFFBIHBsYW4gZm9yIFNTTyB0ZXN0aW5nCkR1ZTogTWFyY2ggMTIKCi0tLQoKTkVYVCBNRUVUSU5HCkRhdGU6IE1hcmNoIDE5LCAyMDI2LCAyOjAwIFBNIEVTVApMb2NhdGlvbjogQ29uZmVyZW5jZSBSb29tIEIgLyBab29tClRvcGljczogUGVyZm9ybWFuY2UgUkNBIHJlc3VsdHMsIFNTTyBwbGFubmluZywgUTIgZm9ybWFsIGtpY2tvZmYKCi0tLQoKTk9URVMKLSBBbGwgZGVsaXZlcmFibGVzIHRvIGJlIHRyYWNrZWQgaW4gTm90aW9uIHByb2plY3QgYm9hcmQKLSBDb2RlIGZyZWV6ZSBzY2hlZHVsZWQgZm9yIEFwcmlsIDEg4oCUIGFsbCB0ZWFtcyBuZWVkIHRvIHBsYW4gYWNjb3JkaW5nbHkKLSBKb3JkYW4gdG8gc2VuZCBOUFMgYnJlYWtkb3duIGJ5IGN1c3RvbWVyIHNlZ21lbnQgYmVmb3JlIG5leHQgbWVldGluZwo=",
+          "isImage": false,
+          "extractedText": true
+        }
+      ],
+      "assertions": [
+        {
+          "id": "a-sample-gs-03-1",
+          "type": "llm_rubric",
+          "value": "",
+          "caseSensitive": false,
+          "rubric": "The response includes specific named action items with owners and due dates extracted from the notes"
+        }
+      ],
+      "notes": "## File Attachments + Assertions\n\nThis prompt has a sample meeting notes file already attached (the `q1-product-review.txt` chip in the attachment bar). Send it and watch the model extract structured action items from the document.\n\n**The assertion panel** below the response will automatically score the output using an LLM judge. Click the score badge to see the full reasoning.\n\n**Try with your own files:**\n- Click the paperclip icon to remove this attachment and add your own meeting notes\n- Supported formats: PDF, Word (.docx), Excel, CSV, and plain text\n- The file contents are extracted and sent as text in the prompt — no raw binary is transmitted\n\n**Tip:** Lower temperature (currently 0.5) makes extraction prompts more consistent. Bump it up if you want more interpretive summaries.",
+      "createdAt": "2026-03-10T00:00:00.000Z",
+      "updatedAt": "2026-03-10T00:00:00.000Z"
+    },
+    {
+      "id": "sample-gs-04",
+      "name": "04 — Structured JSON Output",
+      "collectionId": "col-sample-getting-started",
+      "parentId": null,
+      "version": 1,
+      "provider": "openai",
+      "model": "gpt-4o",
+      "systemPrompt": "You are a data extraction assistant. Always respond with valid JSON only — no markdown fences, no explanation, just the raw JSON object.",
+      "userPrompt": "Extract the following fields from this product description and return as a JSON object:\n- name (string): the product name\n- price (number): numeric price, no currency symbol\n- category (string): product category\n- features (array of strings): key features or bullet points\n- in_stock (boolean): whether the product is available\n\nProduct description:\n{{description}}",
+      "parameters": {
+        "temperature": 0.2,
+        "maxTokens": 512,
+        "topP": 1,
+        "stream": false,
+        "jsonMode": true
+      },
+      "attachments": [],
+      "assertions": [
+        {
+          "id": "a-sample-gs-04-1",
+          "type": "valid_json",
+          "value": "",
+          "caseSensitive": false
+        },
+        {
+          "id": "a-sample-gs-04-2",
+          "type": "json_schema",
+          "value": "{\n  \"type\": \"object\",\n  \"required\": [\"name\", \"price\", \"category\", \"features\", \"in_stock\"],\n  \"properties\": {\n    \"name\": { \"type\": \"string\" },\n    \"price\": { \"type\": \"number\" },\n    \"category\": { \"type\": \"string\" },\n    \"features\": { \"type\": \"array\", \"items\": { \"type\": \"string\" } },\n    \"in_stock\": { \"type\": \"boolean\" }\n  }\n}",
+          "caseSensitive": false
+        }
+      ],
+      "notes": "## JSON Mode + Schema Assertions\n\n**JSON mode is enabled** for this prompt (see the parameters panel — the JSON toggle is on). OpenAI-compatible models will always return a valid JSON object when this is set.\n\nTwo assertions run automatically after every response:\n1. **valid_json** — confirms the output parses as JSON\n2. **json_schema** — validates the exact shape matches the expected schema\n\n**Try it:** Open the Variable Test Panel, paste in a product description, and send. Example input:\n\n```\nThe AeroPress Go Travel Coffee Maker is a compact, portable \ncoffee press perfect for travel. Priced at $39.95. It brews \nsmooth, rich coffee in under 2 minutes. Features include a \ndishwasher-safe design, a carrying tote, and compatibility \nwith any grind size. Currently in stock.\n```\n\nBoth assertions should pass. Try a description that omits the price and watch the schema assertion fail.",
+      "createdAt": "2026-03-10T00:00:00.000Z",
+      "updatedAt": "2026-03-10T00:00:00.000Z"
+    }
+  ]
+}

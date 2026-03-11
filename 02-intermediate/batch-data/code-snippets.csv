@@ -1,0 +1,33 @@
+language,code,context
+Python,"def get_user(user_id):
+    conn = psycopg2.connect(DB_URL)
+    cursor = conn.cursor()
+    cursor.execute(f""SELECT * FROM users WHERE id = {user_id}"")
+    return cursor.fetchone()","Backend API handler"
+JavaScript,"function debounce(fn, delay) {
+  let timer;
+  return function(...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  }
+}","Frontend utility"
+Python,"import pickle
+
+def load_model(path):
+    with open(path, 'rb') as f:
+        return pickle.load(f)
+
+def predict(model_path, user_input):
+    model = load_model(model_path)
+    return model.predict([user_input])","ML inference service"
+TypeScript,"async function fetchAllUsers(): Promise<User[]> {
+  const users = [];
+  let page = 1;
+  while (true) {
+    const batch = await api.get(`/users?page=${page}`);
+    users.push(...batch);
+    if (batch.length < 100) break;
+    page++;
+  }
+  return users;
+}","Data sync job"

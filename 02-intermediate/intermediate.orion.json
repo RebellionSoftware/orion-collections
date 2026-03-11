@@ -1,0 +1,283 @@
+{
+  "orion": "1.0",
+  "collection": {
+    "id": "col-sample-intermediate",
+    "name": "Intermediate Techniques",
+    "description": "Batch processing, LLM-as-a-judge assertions, prompt versioning, and code review automation. Assumes you've completed the Getting Started collection.",
+    "promptOrder": [
+      "sample-int-01",
+      "sample-int-02",
+      "sample-int-03",
+      "sample-int-04",
+      "sample-int-05",
+      "sample-int-06"
+    ],
+    "createdAt": "2026-03-10T00:00:00.000Z"
+  },
+  "prompts": [
+    {
+      "id": "sample-int-01",
+      "name": "01 — Batch Sentiment Analysis",
+      "collectionId": "col-sample-intermediate",
+      "parentId": null,
+      "version": 1,
+      "provider": "openai",
+      "model": "gpt-4o",
+      "systemPrompt": "You are a sentiment analysis system. Analyze customer reviews and return structured JSON. Be consistent and objective.",
+      "userPrompt": "Analyze the sentiment of this customer review:\n\n{{review}}\n\nRespond with a JSON object:\n{\n  \"sentiment\": \"positive\" | \"negative\" | \"neutral\" | \"mixed\",\n  \"score\": <integer 1–10, where 1 is very negative and 10 is very positive>,\n  \"summary\": \"<one sentence capturing the key sentiment>\",\n  \"highlights\": [\"<specific phrase or aspect that drove the rating>\"]\n}",
+      "parameters": {
+        "temperature": 0.1,
+        "maxTokens": 512,
+        "topP": 1,
+        "stream": false,
+        "jsonMode": true
+      },
+      "attachments": [],
+      "assertions": [
+        {
+          "id": "a-sample-int-01-1",
+          "type": "valid_json",
+          "value": "",
+          "caseSensitive": false
+        },
+        {
+          "id": "a-sample-int-01-2",
+          "type": "json_schema",
+          "value": "{\n  \"type\": \"object\",\n  \"required\": [\"sentiment\", \"score\", \"summary\", \"highlights\"],\n  \"properties\": {\n    \"sentiment\": { \"type\": \"string\", \"enum\": [\"positive\", \"negative\", \"neutral\", \"mixed\"] },\n    \"score\": { \"type\": \"integer\", \"minimum\": 1, \"maximum\": 10 },\n    \"summary\": { \"type\": \"string\" },\n    \"highlights\": { \"type\": \"array\", \"items\": { \"type\": \"string\" } }\n  }\n}",
+          "caseSensitive": false
+        },
+        {
+          "id": "a-sample-int-01-3",
+          "type": "llm_rubric",
+          "value": "",
+          "caseSensitive": false,
+          "rubric": "The sentiment label and score are consistent with each other and with the tone of the review. The summary accurately reflects the reviewer's main point.",
+          "threshold": 4
+        }
+      ],
+      "notes": "## Batch Processing + Multi-Assertion Quality Control\n\nThis prompt is designed to run against **customer-reviews.csv** from the `batch-data` folder.\n\n**How to run:**\n1. Click the **Batch** tab in the toolbar\n2. Click **Load CSV** and select `samples/batch-data/customer-reviews.csv`\n3. The `{{review}}` column will map automatically\n4. Click **Run All**\n\n**Three assertions run on every row:**\n- `valid_json` — output parses as JSON\n- `json_schema` — shape matches the expected schema exactly (correct enum values, integer score in range)\n- `llm_rubric` — an AI judge checks that the sentiment label and score are internally consistent\n\nThe rubric catches cases where the model says \"positive\" but gives a score of 3 — structurally valid but semantically wrong. This is where LLM-as-a-judge earns its keep.\n\n**Low temperature (0.1)** keeps classification consistent across runs — important when you want repeatable results on the same dataset.",
+      "createdAt": "2026-03-10T00:00:00.000Z",
+      "updatedAt": "2026-03-10T00:00:00.000Z"
+    },
+    {
+      "id": "sample-int-02",
+      "name": "02 — Content Classifier",
+      "collectionId": "col-sample-intermediate",
+      "parentId": null,
+      "version": 1,
+      "provider": "openai",
+      "model": "gpt-4o",
+      "systemPrompt": "You are a content classification system for a news aggregator. Classify text accurately and flag content issues. Return only valid JSON.",
+      "userPrompt": "Classify the following text:\n\n{{text}}\n\nRespond with JSON:\n{\n  \"categories\": [<one or more of: \"Technology\", \"Business\", \"Sports\", \"Entertainment\", \"Politics\", \"Science\", \"Health\">],\n  \"flags\": [<zero or more of: \"spam\", \"offensive_content\", \"misinformation\", \"clickbait\">],\n  \"confidence\": <float 0.0–1.0>,\n  \"reasoning\": \"<one sentence explaining the primary category choice>\"\n}",
+      "parameters": {
+        "temperature": 0.1,
+        "maxTokens": 512,
+        "topP": 1,
+        "stream": false,
+        "jsonMode": true
+      },
+      "attachments": [],
+      "assertions": [
+        {
+          "id": "a-sample-int-02-1",
+          "type": "valid_json",
+          "value": "",
+          "caseSensitive": false
+        },
+        {
+          "id": "a-sample-int-02-2",
+          "type": "contains",
+          "value": "categories",
+          "caseSensitive": false
+        },
+        {
+          "id": "a-sample-int-02-3",
+          "type": "llm_rubric",
+          "value": "",
+          "caseSensitive": false,
+          "rubric": "The categories assigned are appropriate for the content. If the text contains spam, misleading claims, or clickbait, the flags array should reflect that.",
+          "threshold": 3
+        }
+      ],
+      "notes": "## Content Classification at Scale\n\nRun this against **content-tags.csv** from the `batch-data` folder. The dataset includes news articles, a spam message, and a clickbait tech review — a mix that tests whether the model correctly applies flags.\n\n**What to look for:**\n- Row 4 (the prize spam) should have `\"spam\"` in flags and a high confidence on that flag\n- Row 7 (the clickbait tech review) should ideally have `\"clickbait\"` flagged\n- Categories should be specific — \"Technology\" and \"Business\" appearing together is valid for financial tech news\n\n**The LLM rubric** here acts as a spot-check on classification quality without needing hand-labeled ground truth. It's not a replacement for evaluation against labeled data, but it catches obvious errors fast during prompt development.",
+      "createdAt": "2026-03-10T00:00:00.000Z",
+      "updatedAt": "2026-03-10T00:00:00.000Z"
+    },
+    {
+      "id": "sample-int-03",
+      "name": "03 — Code Review Assistant",
+      "collectionId": "col-sample-intermediate",
+      "parentId": null,
+      "version": 1,
+      "provider": "openai",
+      "model": "gpt-4o",
+      "systemPrompt": "You are a senior software engineer conducting code reviews. You are thorough, specific, and educational. You prioritize security issues above all else, then correctness, then performance, then style.",
+      "userPrompt": "Review this {{language}} code snippet:\n\n```{{language}}\n{{code}}\n```\n\nContext: {{context}}\n\nProvide:\n1. **Overall rating**: X/10\n2. **Issues found**: List each issue with severity (critical/major/minor) and a specific explanation\n3. **Positive aspects**: What the code does well\n4. **Suggested rewrite**: An improved version of the code (if changes are needed)",
+      "parameters": {
+        "temperature": 0.3,
+        "maxTokens": 2048,
+        "topP": 1,
+        "stream": true
+      },
+      "attachments": [],
+      "assertions": [
+        {
+          "id": "a-sample-int-03-1",
+          "type": "min_length",
+          "value": "300",
+          "caseSensitive": false
+        },
+        {
+          "id": "a-sample-int-03-2",
+          "type": "contains",
+          "value": "/10",
+          "caseSensitive": false
+        },
+        {
+          "id": "a-sample-int-03-3",
+          "type": "llm_rubric",
+          "value": "",
+          "caseSensitive": false,
+          "rubric": "The review identifies specific, real issues in the code — not generic advice. Security vulnerabilities (like SQL injection or unsafe deserialization) should be flagged as critical if present.",
+          "threshold": 4
+        }
+      ],
+      "notes": "## Automated Code Review with Quality Assertions\n\nLoad **code-snippets.csv** from `batch-data` and run all rows. The CSV includes:\n- A Python function with a **SQL injection vulnerability**\n- A JavaScript debounce utility (generally clean)\n- A Python ML inference function with an **unsafe pickle deserialization** issue\n- A TypeScript pagination function with a potential infinite loop\n\n**The LLM rubric assertion** checks that the model catches real security issues rather than writing generic \"add error handling\" advice. It should flag the SQL injection and pickle issues as critical.\n\n**Try the head-to-head comparison:** Click the Compare button in the toolbar and add a second model (e.g., claude-3-5-sonnet). Run both on the same CSV. Which model catches more security issues?\n\n**Column mapping:** The CSV has `language`, `code`, and `context` columns — all three map directly to `{{language}}`, `{{code}}`, and `{{context}}` in the prompt.",
+      "createdAt": "2026-03-10T00:00:00.000Z",
+      "updatedAt": "2026-03-10T00:00:00.000Z"
+    },
+    {
+      "id": "sample-int-04",
+      "name": "04 — Email Drafter",
+      "collectionId": "col-sample-intermediate",
+      "parentId": null,
+      "version": 1,
+      "provider": "openai",
+      "model": "gpt-4o",
+      "systemPrompt": "You are a professional writing assistant. Help users draft clear, concise business emails.",
+      "userPrompt": "Write a professional email for the following situation:\n\nSituation: {{situation}}\nTone: {{tone}}\nRecipient: {{recipient}}",
+      "parameters": {
+        "temperature": 0.7,
+        "maxTokens": 1024,
+        "topP": 1,
+        "stream": true
+      },
+      "attachments": [],
+      "assertions": [
+        {
+          "id": "a-sample-int-04-1",
+          "type": "min_length",
+          "value": "100",
+          "caseSensitive": false
+        },
+        {
+          "id": "a-sample-int-04-2",
+          "type": "contains",
+          "value": "Subject:",
+          "caseSensitive": true
+        }
+      ],
+      "notes": "## Version 1 of 2 — Email Drafter\n\nThis is the **original version** of the Email Drafter prompt. It works, but notice what's missing:\n- No output structure guidance (is it subject + body? greeting format?)\n- No length constraints\n- No instruction to omit placeholder text like \"[Your Name]\"\n\n**Try it:** In the Variable Test Panel, fill in:\n- situation: `I need to follow up on a proposal I sent two weeks ago with no response`\n- tone: `professional but warm`\n- recipient: `a potential enterprise client`\n\nThen open **prompt 05 (Email Drafter v2)** and run the same inputs. Use the **Diff button** (the split-screen icon in the toolbar) to see exactly what changed between the versions.",
+      "createdAt": "2026-03-10T00:00:00.000Z",
+      "updatedAt": "2026-03-10T00:00:00.000Z"
+    },
+    {
+      "id": "sample-int-05",
+      "name": "05 — Email Drafter v2",
+      "collectionId": "col-sample-intermediate",
+      "parentId": "sample-int-04",
+      "version": 2,
+      "provider": "openai",
+      "model": "gpt-4o",
+      "systemPrompt": "You are an expert business writing coach with 15 years of experience helping executives communicate clearly and persuasively. You write emails that are direct, warm, and get results. You never use filler phrases like 'I hope this email finds you well.' You never leave placeholder text like '[Your Name]' — always write complete, ready-to-send emails.",
+      "userPrompt": "Write a professional email for the following situation:\n\nSituation: {{situation}}\nTone: {{tone}}\nRecipient: {{recipient}}\n\nFormat your response as:\n**Subject:** <subject line>\n\n<email body>\n\nKeep it under 200 words. The email should be immediately sendable — no placeholders, no bracketed instructions.",
+      "parameters": {
+        "temperature": 0.7,
+        "maxTokens": 1024,
+        "topP": 1,
+        "stream": true
+      },
+      "attachments": [],
+      "assertions": [
+        {
+          "id": "a-sample-int-05-1",
+          "type": "min_length",
+          "value": "100",
+          "caseSensitive": false
+        },
+        {
+          "id": "a-sample-int-05-2",
+          "type": "contains",
+          "value": "Subject:",
+          "caseSensitive": true
+        },
+        {
+          "id": "a-sample-int-05-3",
+          "type": "not_contains",
+          "value": "[Your Name]",
+          "caseSensitive": false
+        },
+        {
+          "id": "a-sample-int-05-4",
+          "type": "max_length",
+          "value": "1500",
+          "caseSensitive": false
+        },
+        {
+          "id": "a-sample-int-05-5",
+          "type": "llm_rubric",
+          "value": "",
+          "caseSensitive": false,
+          "rubric": "The email is complete, professional, and immediately sendable. It has a clear subject line, appropriate tone for the situation, and does not contain any placeholder text or bracketed instructions.",
+          "threshold": 4
+        }
+      ],
+      "notes": "## Version 2 of 2 — Email Drafter (Improved)\n\nCompared to v1, this version adds:\n- A more specific system prompt with a defined persona and explicit anti-patterns to avoid\n- Explicit output format instructions (Subject: header + body)\n- A word limit to prevent rambling\n- Three additional assertions: `not_contains` for placeholder text, `max_length` to enforce the limit, and an `llm_rubric` for overall quality\n\n**See the diff:** Click the **diff icon** (split-screen) in the toolbar to compare this version against v1. The word-level highlighting shows exactly what was added and changed.\n\n**Run the same inputs as v1** and compare output quality. The additional assertions will catch common failures like placeholder leakage that are invisible to simple string checks.",
+      "createdAt": "2026-03-10T00:00:00.000Z",
+      "updatedAt": "2026-03-10T00:00:00.000Z"
+    },
+    {
+      "id": "sample-int-06",
+      "name": "06 — Model Comparison: Summarization",
+      "collectionId": "col-sample-intermediate",
+      "parentId": null,
+      "version": 1,
+      "provider": "openai",
+      "model": "gpt-4o",
+      "systemPrompt": "You are a precise summarization engine. Produce concise, accurate summaries that preserve the most important information from the source.",
+      "userPrompt": "Summarize the following text in exactly 3 bullet points. Each bullet should be one sentence. Prioritize the most important information and discard filler.\n\nText:\n{{text}}",
+      "parameters": {
+        "temperature": 0.3,
+        "maxTokens": 512,
+        "topP": 1,
+        "stream": false
+      },
+      "attachments": [],
+      "assertions": [
+        {
+          "id": "a-sample-int-06-1",
+          "type": "regex",
+          "value": "^[-•*]|^\\d+\\.",
+          "caseSensitive": false
+        },
+        {
+          "id": "a-sample-int-06-2",
+          "type": "min_length",
+          "value": "80",
+          "caseSensitive": false
+        },
+        {
+          "id": "a-sample-int-06-3",
+          "type": "llm_rubric",
+          "value": "",
+          "caseSensitive": false,
+          "rubric": "The summary contains exactly 3 bullet points, each is a single sentence, and together they capture the most important information from the source text without introducing inaccuracies.",
+          "threshold": 4
+        }
+      ],
+      "notes": "## Head-to-Head Model Comparison\n\nThis prompt is designed to showcase Orion's **model comparison** feature — running the same prompt across multiple models simultaneously to see which performs best.\n\n**How to run a comparison:**\n1. Click the **Compare** button (⚡ icon) in the toolbar\n2. Add 2–4 models from your configured providers\n3. Click Run — all models run in parallel\n4. Compare responses, latency, and assertion results side by side\n\n**Try it with this text:**\n```\nThe James Webb Space Telescope captured its first images of \nan exoplanet in September 2022, marking a major milestone. \nThe planet, HIP 65426 b, is a gas giant about six to twelve \ntimes the mass of Jupiter. Webb observed it in four different \ninfrared wavelengths, each revealing different atmospheric \ndetails. Scientists expect this capability to eventually \nenable analysis of smaller, rocky planets — potentially \nincluding Earth-like worlds in habitable zones.\n```\n\n**What to look for:** Does one model follow the \"exactly 3 bullets\" instruction more reliably? Do they all pass the rubric? Check the latency column — faster is not always better if the quality drops.",
+      "createdAt": "2026-03-10T00:00:00.000Z",
+      "updatedAt": "2026-03-10T00:00:00.000Z"
+    }
+  ]
+}
